@@ -5,7 +5,7 @@ import numpy as np
 from scipy.stats import trim_mean
 from statsmodels import robust
 import matplotlib.pylab as plt
-import seaborn as sns
+import seaborn as sns  #para mapas de calor
 
 # Rutas definidas
 STATE_CSV = '/home/ruben/Documentos/Programas/practical-statistics-for-data-scientists-master/data/state.csv'
@@ -141,6 +141,31 @@ def programa11():
 #Fin de programa 11
 
 
+def programa12():
+    ##Cargo los datos
+    sp500_sym = pd.read_csv(SECTOR_SP500, header=0)
+    print(sp500_sym.shape)
+    sp500_px = pd.read_csv(DATOS_SP500, header=0, index_col=0) #primera fila es el nombre de las columnas
+    print(sp500_px.shape)
+
+    #filtro los datos de simbolos de las empresas de telecomunicaciones
+    telecomSymbols = sp500_sym[sp500_sym['sector'] == 'telecommunications_services']['symbol']
+    
+    #filtro los datos para coger solo los simbolos de empresas a partir de la fecha pedida
+    telecom = sp500_px.loc[sp500_px.index >= '2012-07-01', telecomSymbols]
+
+    telecom.corr()
+
+
+
+    ax=telecom.plot.scatter(x='T', y='VZ', figsize=(4,4), marker='$\u25EF$')
+    ax.set_xlabel('ATT (T)')
+    ax.set_ylabel('Verizon (VZ)')
+    ax.axhline(0, color='grey', lw=1)
+    ax.axvline(0, color='grey', lw=1)
+    plt.tight_layout()
+    plt.show()
+
 def pruebas():
     COLUMNS = ['age','workclass', 'fnlwgt', 'education', 'education_num', 'marital',
            'occupation', 'relationship', 'race', 'sex', 'capital_gain', 'capital_loss',
@@ -157,7 +182,7 @@ def pruebas():
 
 
 def main():
-    programa11()
+    programa12()
 
 
 if __name__ == '__main__':
